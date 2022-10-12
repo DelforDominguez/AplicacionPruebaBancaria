@@ -8,6 +8,7 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
 {
     public interface IServicioAPI
     {
+        //VENTAS
         Task<List<VentasCAB>> ListarVentasCAB(string iIdVenta25);
 
         Task<List<VentasDET>> ListarVentasDET(string iIdVenta25);
@@ -16,6 +17,9 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
 
         Task<RespuestaGenerica> ModificarDET(RegVentasDet regVentasDet);
 
-        Task<RespuestaGenerica> EliminarDET(string iIdVenta25);
+        Task<RespuestaGenerica> EliminarDET(string iIdVenta25, string iIdVenta27);
+
+        //UTILES
+
     }
 }

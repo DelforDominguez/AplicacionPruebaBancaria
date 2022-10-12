@@ -4,6 +4,7 @@ using AplicacionPruebaBancaria.Modelos.Parametos;
 using AplicacionPruebaBancaria.Modelos.Utilitarios;
 using AplicacionPruebaBancaria.Modelos.VentasCAB;
 using Newtonsoft.Json;
+using System;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -60,23 +61,88 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
             return lista;
         }
 
-        public Task<List<VentasDET>> ListarVentasDET(string iIdVenta25)
+        public async Task<List<VentasDET>> ListarVentasDET(string iIdVenta25)
         {
-            throw new NotImplementedException();
+            List<VentasDET> lista = new List<VentasDET>();
+
+            await Autentificar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var response = await cliente.GetAsync("Ventas/ListarVentasDET/?iIdVenta25=" + iIdVenta25);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<ListarVentasDET>(json_respuesta);
+                lista = resultado.data.ventasDET;
+                Console.Write(resultado);
+            }
+
+            return lista;
         }
 
-        public Task<RespuestaGenerica> ModificarCAB(RegVentasCab regVentasCab)
+        public async Task<RespuestaGenerica> ModificarCAB(RegVentasCab regVentasCab)
         {
-            throw new NotImplementedException();
+            RespuestaGenerica respuestaGenerica = new RespuestaGenerica();  
+
+            await Autentificar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var content = new StringContent(JsonConvert.SerializeObject(regVentasCab), Encoding.UTF8, "application/json");
+            var response = await cliente.PostAsync("Ventas/ModificarCAB/", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<RespuestaGenerica>(json_respuesta);
+                respuestaGenerica = resultado;
+            }
+
+            return respuestaGenerica;
         }
 
-        public Task<RespuestaGenerica> ModificarDET(RegVentasDet regVentasDet)
+        public async Task<RespuestaGenerica> ModificarDET(RegVentasDet regVentasDet)
         {
-            throw new NotImplementedException();
+            RespuestaGenerica respuestaGenerica = new RespuestaGenerica();
+
+            await Autentificar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var content = new StringContent(JsonConvert.SerializeObject(regVentasDet), Encoding.UTF8, "application/json");
+            var response = await cliente.PostAsync("Ventas/ModificarDET/", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<RespuestaGenerica>(json_respuesta);
+                respuestaGenerica = resultado;
+            }
+
+            return respuestaGenerica;
         }
-        public Task<RespuestaGenerica> EliminarDET(string iIdVenta25)
+        public async Task<RespuestaGenerica> EliminarDET(string iIdVenta25,string iIdVenta27)
         {
-            throw new NotImplementedException();
+            RespuestaGenerica respuestaGenerica = new RespuestaGenerica();
+            await Autentificar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var response = await cliente.DeleteAsync("Ventas/EliminarDET/?id25=" + iIdVenta25+ "&?id27="+ iIdVenta27) ;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<RespuestaGenerica>(json_respuesta);
+                respuestaGenerica = resultado;
+            }
+            return respuestaGenerica;
         }
 
     }

@@ -1,4 +1,8 @@
-﻿@page "/counter"
+﻿@page "/RegistroVentas"
+@using AplicacionPruebaBancaria.Modelos.Parametos
+@using AplicacionPruebaBancaria.Modelos.Utilitarios
+@using AplicacionPruebaBancaria.ServiciosAPI
+@inject IServicioAPI ServicioAPI
 
 <PageTitle>Registro Ventas</PageTitle>
 
@@ -20,57 +24,54 @@
     <option value="Los Angeles"/>
     <option value="Chicago"/>
 </datalist>
+*@
 
 <BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
     <BSCol Column="auto">
         <BSLabel IsHidden="true">Vendedor</BSLabel>
-        <BSInput InputType="InputType.Text" placeholder="Vendedor" IsPlainText="true"  @bind-Value="Vendedor"/>
+        <BSInput InputType="InputType.Text" placeholder="Vendedor" IsPlainText="true"  @bind-Value="@regVentasCab.IdVendedor12"/>
     </BSCol>
     <BSCol Column="auto">
         <BSLabel IsHidden="true">Cliente</BSLabel>
-        <BSInput InputType="InputType.Text"  @bind-Value="Cliente"/>
+        <BSInput InputType="InputType.Text"  placeholder="Cliente" IsPlainText="true"   @bind-Value="@regVentasCab.IdCliente12"/>
      </BSCol>
     <BSCol Column="auto">
         <BSLabel IsHidden="true">Fecha de Emision</BSLabel>
-        <BSInput InputType="InputType.Date" @bind-Value="DateValue"/>
+        <BSInput InputType="InputType.Date" @bind-Value="@regVentasCab.FechaEmi25"/>
     </BSCol>
     <BSCol Column="auto">
-        <BSButton Color="BSColor.Primary" IsSubmit="true" 
-        MarginBottom="Margins.Medium" @onclick="EnviaDatos">Confirm identity</BSButton>
+        <BSButton Color="BSColor.Primary" @onclick="OnValidSubmit" MarginBottom="Margins.Medium" >Envia Datos</BSButton>
     </BSCol>
 </BSForm>
-*@
+
+@if (!string.IsNullOrEmpty(Error))
+{ 
+        <p>@Error</p>
+}
 
 
-<form class="row row-cols-lg-auto g-3 align-items-center">
-  <div class="col-12">
-    <label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label>
-    <div class="input-group">
-      <div class="input-group-text">@Vendedor</div>
-      <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username">
-    </div>
-  </div>
 
-  <div class="col-12">
-    <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
-    <select class="form-select" id="inlineFormSelectPref">
-      <option selected>Choose...</option>
-      <option value="1">One</option>
-      <option value="2">Two</option>
-      <option value="3">Three</option>
-    </select>
-  </div>
-
-  <div class="col-12">
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </div>
-</form>
 
 @code {
     private int currentCount = 0;
-    private DateTime DateValue { get; set; }
-    private string Vendedor { get; set; }
-    private string Cliente { get; set; }
+    RegVentasCab regVentasCab = new RegVentasCab();
+    RegVentasDet regVentasDet = new RegVentasDet();
+    //    public List<VentasCAB> ventasCABs { get; set; }
+    public string Error { get; set; }
+    public RespuestaGenerica respuestaGenerica { get; set; }
+
+    private async Task OnValidSubmit() {
+
+       try
+        {
+            Console.WriteLine("Los Datos son" + regVentasCab.IdVendedor12 + " ," + regVentasCab.IdCliente12 + "," + regVentasCab.FechaEmi25);
+            respuestaGenerica = await ServicioAPI.ModificarCAB(regVentasCab);
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+    }
 
     private void IncrementCount()
     {
@@ -80,12 +81,5 @@
     {
         Console.WriteLine("HAS HECHO UN CLICK");
     }
-
-    private void EnviaDatos()
-    {
-        Console.WriteLine("Los Datos son" + Vendedor + " ," + Cliente);
-    }
-
-
 
 }
