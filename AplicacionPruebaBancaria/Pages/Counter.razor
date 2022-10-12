@@ -1,8 +1,10 @@
 ﻿@page "/RegistroVentas"
 @using AplicacionPruebaBancaria.Modelos.Parametos
+@using AplicacionPruebaBancaria.Modelos.Producto
 @using AplicacionPruebaBancaria.Modelos.Utilitarios
 @using AplicacionPruebaBancaria.ServiciosAPI
 @inject IServicioAPI ServicioAPI
+@inject IBlazorStrap blazorStrap
 
 <PageTitle>Registro Ventas</PageTitle>
 
@@ -44,6 +46,45 @@
     </BSCol>
 </BSForm>
 
+        <BSListGroup>
+    @foreach (ListaProducto producto in listaProductos)
+    {
+                            <BSListGroupItem>@producto.descripcion01</BSListGroupItem>
+    }  
+                </BSListGroup>
+
+<BSModal DataId="ProctuctoSelecionado" OnShow="@(() => NewEmployee(new SeleccionGenerica()))">
+    <BSForm Model="SeleccionProducto" OnValidSubmit="@Update">
+        <BSModalHeader>Lista Producto</BSModalHeader>
+        <BSModalContent>
+            <div class="mb-3">
+                <BSLabel>Name</BSLabel>
+                <BSInput InputType="InputType.Text" @bind-Value="SeleccionProducto.id" />
+            </div>
+            <div class="mb-3">
+                <BSLabel>Email address</BSLabel>
+                <BSInput InputType="InputType.Text" @bind-Value="SeleccionProducto.descripcion" />
+            </div>
+            <div class="mb-3">
+                <BSListGroup>
+                @foreach (ListaProducto producto in listaProductos)
+                {
+                        <BSListGroupItem>@producto.descripcion01</BSListGroupItem>
+                }  
+                </BSListGroup>
+             </div>
+        </BSModalContent>
+        <BSModalFooter>
+            <BSButton Target="ProctuctoSelecionado">Cancel</BSButton>
+            <BSButton IsSubmit="true" Color="BSColor.Primary">Save</BSButton>
+        </BSModalFooter>
+    </BSForm>
+</BSModal>
+
+<BSButton Color="BSColor.Primary" Target="ProctuctoSelecionado">Buscar Producto</BSButton>
+
+
+
 @if (!string.IsNullOrEmpty(Error))
 { 
         <p>@Error</p>
@@ -59,10 +100,24 @@
     //    public List<VentasCAB> ventasCABs { get; set; }
     public string Error { get; set; }
     public RespuestaGenerica respuestaGenerica { get; set; }
+    public List<ListaProducto> listaProductos { get; set; }
+
+    //POPUP
+    BSModal refModal;
+    private SeleccionGenerica SeleccionProducto = new SeleccionGenerica();
+    private async Task NewEmployee(SeleccionGenerica e)
+    {
+        SeleccionProducto = e;
+    }
+
+    private async Task Update()
+    {
+        blazorStrap.ForwardClick("ProctuctoSelecionado");
+    }
 
     private async Task OnValidSubmit() {
 
-       try
+        try
         {
             Console.WriteLine("Los Datos son" + regVentasCab.IdVendedor12 + " ," + regVentasCab.IdCliente12 + "," + regVentasCab.FechaEmi25);
             respuestaGenerica = await ServicioAPI.ModificarCAB(regVentasCab);
@@ -77,9 +132,18 @@
     {
         currentCount++;
     }
-    private void MuestraMensaje()
+
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("HAS HECHO UN CLICK");
+        try
+        {
+            listaProductos = await ServicioAPI.ProductoListar("0", "Null");
+        }
+        catch (Exception ex)
+        {
+            Error = "ProductoListar : " + ex.Message;
+        }
     }
+
 
 }

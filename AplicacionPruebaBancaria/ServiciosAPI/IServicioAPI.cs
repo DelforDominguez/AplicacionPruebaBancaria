@@ -1,6 +1,7 @@
 ﻿using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
 using AplicacionPruebaBancaria.Modelos.ListarVentasDET;
 using AplicacionPruebaBancaria.Modelos.Parametos;
+using AplicacionPruebaBancaria.Modelos.Producto;
 using AplicacionPruebaBancaria.Modelos.Utilitarios;
 using AplicacionPruebaBancaria.Modelos.VentasCAB;
 
@@ -19,7 +20,9 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
 
         Task<RespuestaGenerica> EliminarDET(string iIdVenta25, string iIdVenta27);
 
-        //UTILES
+        //PRODUCTOS
+        Task<List<ListaProducto>> ProductoListar(string iIdProducto,string sDescripcionProducto);
+
 
     }
 }

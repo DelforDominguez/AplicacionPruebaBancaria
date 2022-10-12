@@ -1,6 +1,7 @@
 ﻿using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
 using AplicacionPruebaBancaria.Modelos.ListarVentasDET;
 using AplicacionPruebaBancaria.Modelos.Parametos;
+using AplicacionPruebaBancaria.Modelos.Producto;
 using AplicacionPruebaBancaria.Modelos.Utilitarios;
 using AplicacionPruebaBancaria.Modelos.VentasCAB;
 using Newtonsoft.Json;
@@ -145,5 +146,27 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
             return respuestaGenerica;
         }
 
+        //PRODUCTOS
+        public async Task<List<ListaProducto>> ProductoListar(string iIdProducto, string sDescripcionProducto)
+        {
+            List<ListaProducto> lista = new List<ListaProducto>();
+
+            await Autentificar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var response = await cliente.GetAsync("Producto/Listar/?iIdProducto=" + iIdProducto + "&sDescripcionProducto=" + sDescripcionProducto);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<ProductoLista>(json_respuesta);
+                lista = resultado.data.listaProducto;
+                Console.Write(resultado);
+            }
+
+            return lista;
+        }
     }
 }
