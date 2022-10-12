@@ -1,0 +1,67 @@
+﻿@page "/"
+@using AplicacionPruebaBancaria.Modelos
+@using AplicacionPruebaBancaria.Modelos.VentasCAB
+@using AplicacionPruebaBancaria.ServiciosAPI
+@inject IServicioAPI ServicioAPI
+
+<PageTitle>Index</PageTitle>
+
+<h1>Lista de Ventas realizadas</h1>
+<br />
+<div>
+    @if (ventasCABs == null)
+    {
+        <p>Cargando</p>
+    }
+    else
+    {
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+              <th scope="col">#</th>
+                  <th scope="col">Fecha Emision</th>
+                  <th scope="col">Vendedor</th>
+                  <th scope="col">Cliente</th>
+                  <th scope="col">Monto Desembolsado</th>
+                  <th scope="col">Puntos Totales</th>
+        </tr>
+      </thead>
+      <tbody>
+                @foreach (VentasCAB ventaCab in ventasCABs)
+                {
+                   <tr>
+                     <th scope="row">@ventaCab.id25</th>
+                     <td>@ventaCab.fechaEmi25</td>
+                     <td>@ventaCab.vendedor12</td>
+                     <td>@ventaCab.cliente12</td>
+                     <td>@ventaCab.montoDesembolsado25</td>
+                     <td>@ventaCab.puntosTotales25</td>
+                   </tr>
+                }
+       </tbody>
+    </table>
+    }
+</div>
+@if (!string.IsNullOrEmpty(Error))
+{ 
+    <p>@Error</p>
+}
+
+
+@code{
+    public List<VentasCAB> ventasCABs { get; set; }
+    public string Error { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ventasCABs = await ServicioAPI.ListarVentasCAB("0");
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+    }
+}

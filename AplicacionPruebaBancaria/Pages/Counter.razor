@@ -1,0 +1,91 @@
+﻿@page "/counter"
+
+<PageTitle>Registro Ventas</PageTitle>
+
+<h1>Registro Ventas</h1>
+
+@*<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+
+@*<BSButton Color="BSColor.Primary" @onclick="MuestraMensaje">HOLIS </BSButton>
+
+<BSLabel>Datalist example</BSLabel>
+<BSInput InputType="InputType.DataList" list="datalistOptions" Value="@("Test")" />
+
+<datalist id="datalistOptions">
+    <option value="San Francisco"/>
+    <option value="New York"/>
+    <option value="Seattle"/>
+    <option value="Los Angeles"/>
+    <option value="Chicago"/>
+</datalist>
+
+<BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+    <BSCol Column="auto">
+        <BSLabel IsHidden="true">Vendedor</BSLabel>
+        <BSInput InputType="InputType.Text" placeholder="Vendedor" IsPlainText="true"  @bind-Value="Vendedor"/>
+    </BSCol>
+    <BSCol Column="auto">
+        <BSLabel IsHidden="true">Cliente</BSLabel>
+        <BSInput InputType="InputType.Text"  @bind-Value="Cliente"/>
+     </BSCol>
+    <BSCol Column="auto">
+        <BSLabel IsHidden="true">Fecha de Emision</BSLabel>
+        <BSInput InputType="InputType.Date" @bind-Value="DateValue"/>
+    </BSCol>
+    <BSCol Column="auto">
+        <BSButton Color="BSColor.Primary" IsSubmit="true" 
+        MarginBottom="Margins.Medium" @onclick="EnviaDatos">Confirm identity</BSButton>
+    </BSCol>
+</BSForm>
+*@
+
+
+<form class="row row-cols-lg-auto g-3 align-items-center">
+  <div class="col-12">
+    <label class="visually-hidden" for="inlineFormInputGroupUsername">Username</label>
+    <div class="input-group">
+      <div class="input-group-text">@Vendedor</div>
+      <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username">
+    </div>
+  </div>
+
+  <div class="col-12">
+    <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+    <select class="form-select" id="inlineFormSelectPref">
+      <option selected>Choose...</option>
+      <option value="1">One</option>
+      <option value="2">Two</option>
+      <option value="3">Three</option>
+    </select>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+
+@code {
+    private int currentCount = 0;
+    private DateTime DateValue { get; set; }
+    private string Vendedor { get; set; }
+    private string Cliente { get; set; }
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+    private void MuestraMensaje()
+    {
+        Console.WriteLine("HAS HECHO UN CLICK");
+    }
+
+    private void EnviaDatos()
+    {
+        Console.WriteLine("Los Datos son" + Vendedor + " ," + Cliente);
+    }
+
+
+
+}
