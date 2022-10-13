@@ -46,37 +46,49 @@
     </BSCol>
 </BSForm>
 
-        <BSListGroup>
-    @foreach (ListaProducto producto in listaProductos)
-    {
-                            <BSListGroupItem>@producto.descripcion01</BSListGroupItem>
-    }  
-                </BSListGroup>
-
-<BSModal DataId="ProctuctoSelecionado" OnShow="@(() => NewEmployee(new SeleccionGenerica()))">
+<BSModal DataId="ProctuctoSelecionado" OnShow="@(() => SelecionProducto(new SeleccionGenerica()))">
     <BSForm Model="SeleccionProducto" OnValidSubmit="@Update">
         <BSModalHeader>Lista Producto</BSModalHeader>
         <BSModalContent>
-            <div class="mb-3">
+        @*    <div class="mb-3">
                 <BSLabel>Name</BSLabel>
                 <BSInput InputType="InputType.Text" @bind-Value="SeleccionProducto.id" />
             </div>
             <div class="mb-3">
                 <BSLabel>Email address</BSLabel>
                 <BSInput InputType="InputType.Text" @bind-Value="SeleccionProducto.descripcion" />
-            </div>
-            <div class="mb-3">
-                <BSListGroup>
-                @foreach (ListaProducto producto in listaProductos)
-                {
-                        <BSListGroupItem>@producto.descripcion01</BSListGroupItem>
-                }  
-                </BSListGroup>
+            </div>*@
+             <div class="mb-3">
+                    <BSTable IsResponsive="true" IsStriped="true">
+                        <BSTHead>
+                            <BSTR>
+                                <BSTD>#</BSTD>
+                                <BSTD>Catalogo</BSTD>
+                                <BSTD>Descripcion</BSTD>
+                                <BSTD>Tipo Calculo</BSTD>
+                                <BSTD>Accion</BSTD>
+                            </BSTR>
+                        </BSTHead>
+                        <BSTBody>
+                          
+                            @foreach (ListaProducto producto in listaProductos)
+                            {
+                                  <BSTR>
+                                     <BSTD>@producto.id01</BSTD>
+                                     <BSTD>@producto.catalogo01</BSTD>
+                                     <BSTD>@producto.descripcion01</BSTD>
+                                     <BSTD>@producto.descripcion02</BSTD>
+                                     <BSTD><BSButton Target="ProctuctoSelecionado" Color="BSColor.Primary" @onclick="SelecionProductoPopUP">Seleccionar </BSButton></BSTD>
+                                  </BSTR>
+                            }
+                     
+                        </BSTBody>
+                    </BSTable>
              </div>
         </BSModalContent>
         <BSModalFooter>
             <BSButton Target="ProctuctoSelecionado">Cancel</BSButton>
-            <BSButton IsSubmit="true" Color="BSColor.Primary">Save</BSButton>
+            @*<BSButton IsSubmit="true" Color="BSColor.Primary">Save</BSButton>*@
         </BSModalFooter>
     </BSForm>
 </BSModal>
@@ -92,7 +104,6 @@
 
 
 
-
 @code {
     private int currentCount = 0;
     RegVentasCab regVentasCab = new RegVentasCab();
@@ -105,7 +116,7 @@
     //POPUP
     BSModal refModal;
     private SeleccionGenerica SeleccionProducto = new SeleccionGenerica();
-    private async Task NewEmployee(SeleccionGenerica e)
+    private async Task SelecionProducto(SeleccionGenerica e)
     {
         SeleccionProducto = e;
     }
@@ -133,6 +144,12 @@
         currentCount++;
     }
 
+
+    private void SelecionProductoPopUP()
+    {
+        Console.WriteLine("Si esta pasando por aqui");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -144,6 +161,4 @@
             Error = "ProductoListar : " + ex.Message;
         }
     }
-
-
 }
