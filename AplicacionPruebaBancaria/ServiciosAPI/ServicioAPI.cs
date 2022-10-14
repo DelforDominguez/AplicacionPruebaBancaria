@@ -1,4 +1,5 @@
-﻿using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
+﻿using AplicacionPruebaBancaria.Modelos.ListarPersonaPorRol;
+using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
 using AplicacionPruebaBancaria.Modelos.ListarVentasDET;
 using AplicacionPruebaBancaria.Modelos.Parametos;
 using AplicacionPruebaBancaria.Modelos.Producto;
@@ -163,6 +164,28 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
                 var json_respuesta = await response.Content.ReadAsStringAsync();
                 var resultado = JsonConvert.DeserializeObject<ProductoLista>(json_respuesta);
                 lista = resultado.data.listaProducto;
+                Console.Write(resultado);
+            }
+
+            return lista;
+        }
+
+        public async Task<List<ListaPersonalPorRol>> ListaPersonalPorRol(string Id09, string Id08)
+        {
+            List<ListaPersonalPorRol> lista = new List<ListaPersonalPorRol>();
+
+            await Autentificar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var response = await cliente.GetAsync("Utilitarios/ListarPersonalPorRol/?Id09=" + Id09 + "&Id08=" + Id08);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<ListarPersonasRol>(json_respuesta);
+                lista = resultado.data.listaPersonalPorRol;
                 Console.Write(resultado);
             }
 

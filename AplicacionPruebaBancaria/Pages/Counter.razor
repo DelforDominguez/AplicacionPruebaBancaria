@@ -1,7 +1,11 @@
 ﻿@page "/RegistroVentas"
+@page "/RegistroVentas/{iId25:int}"
+@using AplicacionPruebaBancaria.Modelos.ListarPersonaPorRol
+@using AplicacionPruebaBancaria.Modelos.ListarVentasDET
 @using AplicacionPruebaBancaria.Modelos.Parametos
 @using AplicacionPruebaBancaria.Modelos.Producto
 @using AplicacionPruebaBancaria.Modelos.Utilitarios
+@using AplicacionPruebaBancaria.Modelos.VentasCAB
 @using AplicacionPruebaBancaria.ServiciosAPI
 @inject IServicioAPI ServicioAPI
 @inject IBlazorStrap blazorStrap
@@ -10,55 +14,144 @@
 
 <h1>Registro Ventas</h1>
 
-@*<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
-
-@*<BSButton Color="BSColor.Primary" @onclick="MuestraMensaje">HOLIS </BSButton>
-
-<BSLabel>Datalist example</BSLabel>
-<BSInput InputType="InputType.DataList" list="datalistOptions" Value="@("Test")" />
-
-<datalist id="datalistOptions">
-    <option value="San Francisco"/>
-    <option value="New York"/>
-    <option value="Seattle"/>
-    <option value="Los Angeles"/>
-    <option value="Chicago"/>
-</datalist>
-*@
+<BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+   <BSCol Column="auto">
+      <BSLabel>Cod. Registro</BSLabel>
+      <BSInput InputType="InputType.Text" IsReadonly="true"  @bind-Value="@regVentasCab.Id25" /> 
+   </BSCol>
+   <BSCol Column="auto">
+        <BSLabel >Fecha de Emision</BSLabel>
+        <BSInput InputType="InputType.Date" @bind-Value="@fechaEmisionDoc" />
+   </BSCol>
+</BSForm>
+<br />
 
 <BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
     <BSCol Column="auto">
-        <BSLabel IsHidden="true">Vendedor</BSLabel>
-        <BSInput InputType="InputType.Text" placeholder="Vendedor" IsPlainText="true"  @bind-Value="@regVentasCab.IdVendedor12"/>
+         <BSLabel>Cod. Cliente</BSLabel>
+         <BSInput InputType="InputType.Text" IsReadonly="true"  @bind-Value="@regVentasCab.IdCliente12" /> 
     </BSCol>
     <BSCol Column="auto">
-        <BSLabel IsHidden="true">Cliente</BSLabel>
-        <BSInput InputType="InputType.Text"  placeholder="Cliente" IsPlainText="true"   @bind-Value="@regVentasCab.IdCliente12"/>
+         <BSLabel>Razon Social</BSLabel>
+         <BSInput InputType="InputType.Text" IsReadonly="true" @bind-Value="@SeleccionCliente.descripcion" />
      </BSCol>
-    <BSCol Column="auto">
-        <BSLabel IsHidden="true">Fecha de Emision</BSLabel>
-        <BSInput InputType="InputType.Date" @bind-Value="@regVentasCab.FechaEmi25"/>
-    </BSCol>
-    <BSCol Column="auto">
-        <BSButton Color="BSColor.Primary" @onclick="OnValidSubmit" MarginBottom="Margins.Medium" >Envia Datos</BSButton>
+    <BSCol Column="auto" Align="Align.End">
+         <BSButton Color="BSColor.Primary" Target="ClienteSelecionado">Buscar cliente</BSButton>
     </BSCol>
 </BSForm>
+<br />
 
-<BSModal DataId="ProctuctoSelecionado" OnShow="@(() => SelecionProducto(new SeleccionGenerica()))">
-    <BSForm Model="SeleccionProducto" OnValidSubmit="@Update">
-        <BSModalHeader>Lista Producto</BSModalHeader>
-        <BSModalContent>
-        @*    <div class="mb-3">
-                <BSLabel>Name</BSLabel>
-                <BSInput InputType="InputType.Text" @bind-Value="SeleccionProducto.id" />
-            </div>
-            <div class="mb-3">
-                <BSLabel>Email address</BSLabel>
-                <BSInput InputType="InputType.Text" @bind-Value="SeleccionProducto.descripcion" />
-            </div>*@
-             <div class="mb-3">
+<BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+    <BSCol Column="auto">
+         <BSLabel>Cod. Vendedor</BSLabel>
+         <BSInput InputType="InputType.Text" IsReadonly="true"  @bind-Value="@regVentasCab.IdVendedor12" /> 
+    </BSCol>
+    <BSCol Column="auto">
+         <BSLabel>Nombre Vendedor</BSLabel>
+         <BSInput InputType="InputType.Text" IsReadonly="true" @bind-Value="@SeleccionVendedor.descripcion" />
+     </BSCol>
+    <BSCol Column="auto" Align="Align.End">
+         <BSButton Color="BSColor.Primary" Target="VendedorSelecionado">Buscar Vendedor</BSButton>
+    </BSCol>
+</BSForm>
+<br />
+<BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+    <BSCol Column="auto" Align="Align.End">
+        <BSButton Color="BSColor.Primary" @onclick="ActualizarCabecera">Grabar datos Cabecera</BSButton>
+    </BSCol>
+</BSForm>
+<br />
+@if (iId25 == 0)
+{
+    <p></p>
+}
+else 
+{
+    <BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+        <BSCol Column="auto">
+             <BSLabel>ID Producto</BSLabel>
+             <BSInput InputType="InputType.Text" IsReadonly="true"  @bind-Value="@SeleccionProducto.id" /> 
+        </BSCol>
+        <BSCol Column="auto">
+             <BSLabel>Descripcion</BSLabel>
+             <BSInput InputType="InputType.Text" IsReadonly="true"  @bind-Value="@SeleccionProducto.descripcion" />
+         </BSCol>
+        <BSCol Column="auto" Align="Align.End">
+             <BSButton Color="BSColor.Primary" Target="ProctuctoSelecionado">Buscar Producto</BSButton>
+        </BSCol>
+    </BSForm>
+    <BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+        <BSCol Column="auto">
+             <BSLabel>Cantidad</BSLabel>
+             <BSInput InputType="InputType.Number"  @bind-Value="@regVentasDet.Cantidad27" /> 
+        </BSCol>
+        <BSCol Column="auto">
+             <BSLabel>Monto Desembolsado</BSLabel>
+             <BSInput InputType="InputType.Number"  @bind-Value="@regVentasDet.MontoDesembolsado27" />
+         </BSCol>
+    </BSForm>
+    <BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+        <BSCol Column="auto" Align="Align.End">
+             <BSButton Color="BSColor.Primary" @onclick="AgregarItem">Agregar Producto</BSButton>
+        </BSCol>
+    </BSForm>
+
+    @if (ventasDETs == null)
+    {
+                    <p>No hay items Agregados</p>
+    }
+    else
+    {
+                <table class="table">
+                  <thead class="thead-dark">
+                    <tr>
+                          <th scope="col">#</th>
+                              <th scope="col">Cod Art.</th>
+                              <th scope="col">Catalogo</th>
+                              <th scope="col">Descripcion</th>
+                              <th scope="col">Valor Unitario</th>
+                              <th scope="col">Monto Desembolsado</th>
+                              <th scope="col">Punto Totales</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                @foreach (VentasDET ventasDET in ventasDETs)
+                {
+                                       <tr>
+                                         <th scope="row">@ventasDET.id27</th>
+                                         <td>@ventasDET.idProducto01</td>
+                                         <td>@ventasDET.catalogo01</td>
+                                         <td>@ventasDET.descripcion01</td>
+                                         <td>@ventasDET.valorUnitario27</td>
+                                         <td>@ventasDET.montoDesembolsado27</td>
+                                         <td>@ventasDET.puntosTotales27</td>
+                                       </tr>
+                }
+                   </tbody>
+                </table>
+
+                        <br />
+
+        <BSForm IsRow="true" Gutters="Gutters.Medium" IsBasic="true">
+            <BSCol Column="auto">
+                 <BSLabel>Total Monto Depositado</BSLabel>
+                 <BSInput InputType="InputType.Text" IsReadonly="true"  @bind-Value="@TotalMonto" /> 
+            </BSCol>
+            <BSCol Column="auto">
+                 <BSLabel>Total Puntos</BSLabel>
+                 <BSInput InputType="InputType.Text" IsReadonly="true" @bind-Value="@TotalPuntos" />
+             </BSCol>
+        </BSForm>
+        <br />
+                <br />
+    }
+}
+
+
+<BSModal DataId="ProctuctoSelecionado" Size="Size.Large">
+    <Header>Lista</Header>
+    <Content>
+          <div class="mb-3">
                     <BSTable IsResponsive="true" IsStriped="true">
                         <BSTHead>
                             <BSTR>
@@ -69,69 +162,212 @@
                                 <BSTD>Accion</BSTD>
                             </BSTR>
                         </BSTHead>
-                        <BSTBody>
-                          
-                            @foreach (ListaProducto producto in listaProductos)
-                            {
-                                  <BSTR>
-                                     <BSTD>@producto.id01</BSTD>
-                                     <BSTD>@producto.catalogo01</BSTD>
-                                     <BSTD>@producto.descripcion01</BSTD>
-                                     <BSTD>@producto.descripcion02</BSTD>
-                                     <BSTD><BSButton Target="ProctuctoSelecionado" Color="BSColor.Primary" @onclick="SelecionProductoPopUP">Seleccionar </BSButton></BSTD>
-                                  </BSTR>
-                            }
-                     
+                        <BSTBody>   
+                    @foreach (ListaProducto producto in listaProductos)
+                    {
+                                          <BSTR>
+                                             <BSTD>@producto.id01</BSTD>
+                                             <BSTD>@producto.catalogo01</BSTD>
+                                             <BSTD>@producto.descripcion01</BSTD>
+                                             <BSTD>@producto.descripcion02</BSTD>
+                                                 <BSTD ><BSButton Target="ProctuctoSelecionado" MarginStart="Margins.Auto"
+                                                 OnClick="@(e=> SelecionProductoPopUP(@producto.id01,@producto.descripcion01))" 
+                                                 Color="BSColor.Primary">Seleccionar </BSButton> 
+                                              </BSTD>
+                                          </BSTR>
+                    }         
                         </BSTBody>
                     </BSTable>
              </div>
-        </BSModalContent>
-        <BSModalFooter>
-            <BSButton Target="ProctuctoSelecionado">Cancel</BSButton>
-            @*<BSButton IsSubmit="true" Color="BSColor.Primary">Save</BSButton>*@
-        </BSModalFooter>
-    </BSForm>
+    </Content>
+    <Footer Context="modal">
+        <BSButton MarginStart="Margins.Auto" Color="BSColor.Secondary" @onclick="modal.HideAsync">Close</BSButton>
+    </Footer>
 </BSModal>
 
-<BSButton Color="BSColor.Primary" Target="ProctuctoSelecionado">Buscar Producto</BSButton>
+<BSModal DataId="ClienteSelecionado" Size="Size.Large">
+    <Header>Lista</Header>
+    <Content>
+          <div class="mb-3">
+                    <BSTable IsResponsive="true" IsStriped="true">
+                        <BSTHead>
+                            <BSTR>
+                                <BSTD>#</BSTD>
+                                <BSTD>Razon Social</BSTD>
+                                <BSTD>Accion</BSTD>
+                            </BSTR>
+                        </BSTHead>
+                        <BSTBody>   
+                    @foreach (ListaPersonalPorRol Cliente in ListaClientes)
+                    {
+                                              <BSTR>
+                                                     <BSTD>@Cliente.id12</BSTD>
+                                                 <BSTD>@Cliente.fullname12</BSTD>
+                                                         <BSTD ><BSButton Target="ClienteSelecionado" MarginStart="Margins.Auto"
+                                                 OnClick="@(e=> SelecionClientePopUP(@Cliente.id12,@Cliente.fullname12))" 
+                                                 Color="BSColor.Primary">Seleccionar </BSButton> 
+                                                  </BSTD>
+                                              </BSTR>
+                    }         
+                        </BSTBody>
+                    </BSTable>
+             </div>
+    </Content>
+        <Footer Context="modal">
+            <BSButton MarginStart="Margins.Auto" Color="BSColor.Secondary" @onclick="modal.HideAsync">Close</BSButton>
+        </Footer>
+</BSModal>
 
-
+<BSModal DataId="VendedorSelecionado" Size="Size.Large">
+    <Header>Lista</Header>
+    <Content>
+          <div class="mb-3">
+                    <BSTable IsResponsive="true" IsStriped="true">
+                        <BSTHead>
+                            <BSTR>
+                                <BSTD>#</BSTD>
+                                <BSTD>Nombre completo</BSTD>
+                                <BSTD>Accion</BSTD>
+                            </BSTR>
+                        </BSTHead>
+                        <BSTBody>   
+                    @foreach (ListaPersonalPorRol Vendedor in ListaVendedores)
+                    {
+                            <BSTR>
+                                <BSTD>@Vendedor.id12</BSTD>
+                                <BSTD>@Vendedor.fullname12</BSTD>
+                                <BSTD ><BSButton Target="VendedorSelecionado" MarginStart="Margins.Auto"
+                                        OnClick="@(e=> SelecionVendedorPopUP(@Vendedor.id12,@Vendedor.fullname12))" 
+                                        Color="BSColor.Primary">Seleccionar </BSButton> 
+                                 </BSTD>
+                             </BSTR>
+                    }         
+                        </BSTBody>
+                    </BSTable>
+             </div>
+    </Content>
+        <Footer Context="modal">
+            <BSButton MarginStart="Margins.Auto" Color="BSColor.Secondary" @onclick="modal.HideAsync">Close</BSButton>
+        </Footer>
+</BSModal>
 
 @if (!string.IsNullOrEmpty(Error))
 { 
         <p>@Error</p>
 }
 
-
-
 @code {
-    private int currentCount = 0;
+    [Parameter] public int iId25 { get; set; }=0;
+    private DateTime fechaEmisionDoc = DateTime.Today;
+    private double TotalPuntos = 0;
+    private double TotalMonto = 0;
     RegVentasCab regVentasCab = new RegVentasCab();
     RegVentasDet regVentasDet = new RegVentasDet();
     //    public List<VentasCAB> ventasCABs { get; set; }
     public string Error { get; set; }
     public RespuestaGenerica respuestaGenerica { get; set; }
     public List<ListaProducto> listaProductos { get; set; }
+    public List<ListaPersonalPorRol> ListaClientes { get; set; }
+    public List<ListaPersonalPorRol> ListaVendedores { get; set; }
 
     //POPUP
-    BSModal refModal;
     private SeleccionGenerica SeleccionProducto = new SeleccionGenerica();
-    private async Task SelecionProducto(SeleccionGenerica e)
+    private SeleccionGenerica SeleccionCliente = new SeleccionGenerica();
+    private SeleccionGenerica SeleccionVendedor = new SeleccionGenerica();
+
+    //DATOS
+    public List<VentasCAB> ventasCABs { get; set; }
+    public List<VentasDET> ventasDETs { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        SeleccionProducto = e;
+        try
+        {
+            listaProductos = await ServicioAPI.ProductoListar("0", "Null");
+            ListaClientes = await ServicioAPI.ListaPersonalPorRol("5", "0");
+            ListaVendedores = await ServicioAPI.ListaPersonalPorRol("0", "1");
+            regVentasCab.Id25 = iId25;
+            regVentasDet.Id25 = iId25;
+            fechaEmisionDoc = DateTime.Now;
+            if (iId25 != 0)
+            {
+                ventasCABs = await ServicioAPI.ListarVentasCAB(Convert.ToString(iId25));
+                ventasDETs = await ServicioAPI.ListarVentasDET(Convert.ToString(iId25));
+                @foreach (VentasCAB ventaCab in ventasCABs)
+                {
+                    fechaEmisionDoc = ventaCab.fechaEmi25;
+                    regVentasCab.IdCliente12 = ventaCab.idCliente12;
+                    regVentasCab.IdVendedor12 = ventaCab.idVendedor12;
+                    SeleccionCliente.id = Convert.ToString(@ventaCab.idCliente12);
+                    SeleccionCliente.descripcion = @ventaCab.cliente12;
+                    SeleccionVendedor.id = Convert.ToString(@ventaCab.idVendedor12);
+                    SeleccionVendedor.descripcion = @ventaCab.vendedor12;
+                    TotalMonto = ventaCab.montoDesembolsado25;
+                    TotalPuntos = ventaCab.puntosTotales25;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Error = "ProductoListar : " + ex.Message;
+        }
     }
 
-    private async Task Update()
+    private void SelecionProductoPopUP(int id ,string Descrip)
     {
-        blazorStrap.ForwardClick("ProctuctoSelecionado");
+        SeleccionProducto.id = Convert.ToString(id);
+        SeleccionProducto.descripcion = Descrip;
+        regVentasDet.IdProducto01 = id;
+        regVentasDet.Id27 = 0;
+        regVentasDet.MontoDesembolsado27 = 0;
+        regVentasDet.Cantidad27 = 0;
+        Console.WriteLine("Si esta pasando por aqui 2 " + Descrip);
     }
 
-    private async Task OnValidSubmit() {
+    private void SelecionClientePopUP(int id, string Descrip)
+    {
+        SeleccionCliente.id = Convert.ToString(id);
+        regVentasCab.IdCliente12 = id;
+        SeleccionCliente.descripcion = Descrip;
+        Console.WriteLine("Si esta pasando por aqui 2 " + Descrip);
+    }
+    private void SelecionVendedorPopUP(int id, string Descrip)
+    {
+        SeleccionVendedor.id = Convert.ToString(id);
+        regVentasCab.IdVendedor12 = id;
+        SeleccionVendedor.descripcion = Descrip;
+        Console.WriteLine("Si esta pasando por aqui 2 " + Descrip);
+    }
+
+
+    private async Task ActualizarCabecera() {
 
         try
         {
+            regVentasCab.FechaEmi25 =fechaEmisionDoc.ToShortDateString();
             Console.WriteLine("Los Datos son" + regVentasCab.IdVendedor12 + " ," + regVentasCab.IdCliente12 + "," + regVentasCab.FechaEmi25);
             respuestaGenerica = await ServicioAPI.ModificarCAB(regVentasCab);
+            regVentasCab.Id25 = Convert.ToInt32(respuestaGenerica.data);
+            regVentasDet.Id25 = Convert.ToInt32(respuestaGenerica.data);
+            iId25= Convert.ToInt32(respuestaGenerica.data);
+
+            if (iId25 != 0)
+            {
+                ventasCABs = await ServicioAPI.ListarVentasCAB(Convert.ToString(iId25));
+                ventasDETs = await ServicioAPI.ListarVentasDET(Convert.ToString(iId25));
+                @foreach (VentasCAB ventaCab in ventasCABs)
+                {
+                    fechaEmisionDoc = ventaCab.fechaEmi25;
+                    regVentasCab.IdCliente12 = ventaCab.idCliente12;
+                    regVentasCab.IdVendedor12 = ventaCab.idVendedor12;
+                    SeleccionCliente.id = Convert.ToString(@ventaCab.idCliente12);
+                    SeleccionCliente.descripcion = @ventaCab.cliente12;
+                    SeleccionVendedor.id = Convert.ToString(@ventaCab.idVendedor12);
+                    SeleccionVendedor.descripcion = @ventaCab.vendedor12;
+                    TotalMonto = ventaCab.montoDesembolsado25;
+                    TotalPuntos = ventaCab.puntosTotales25;
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -139,26 +375,34 @@
         }
     }
 
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
-
-
-    private void SelecionProductoPopUP()
-    {
-        Console.WriteLine("Si esta pasando por aqui");
-    }
-
-    protected override async Task OnInitializedAsync()
+    private async Task AgregarItem()
     {
         try
         {
-            listaProductos = await ServicioAPI.ProductoListar("0", "Null");
+            Console.WriteLine("Los Datos son" + regVentasDet.IdProducto01 + " ," + regVentasDet.Cantidad27 + "," + regVentasDet.MontoDesembolsado27);
+            respuestaGenerica = await ServicioAPI.ModificarDET(regVentasDet);
+            regVentasDet.Id27 = 0;
+            if (iId25 != 0)
+            {
+                ventasCABs = await ServicioAPI.ListarVentasCAB(Convert.ToString(iId25));
+                ventasDETs = await ServicioAPI.ListarVentasDET(Convert.ToString(iId25));
+                @foreach (VentasCAB ventaCab in ventasCABs)
+                {
+                    fechaEmisionDoc = ventaCab.fechaEmi25;
+                    regVentasCab.IdCliente12 = ventaCab.idCliente12;
+                    regVentasCab.IdVendedor12 = ventaCab.idVendedor12;
+                    SeleccionCliente.id = Convert.ToString(@ventaCab.idCliente12);
+                    SeleccionCliente.descripcion = @ventaCab.cliente12;
+                    SeleccionVendedor.id = Convert.ToString(@ventaCab.idVendedor12);
+                    SeleccionVendedor.descripcion = @ventaCab.vendedor12;
+                    TotalMonto = ventaCab.montoDesembolsado25;
+                    TotalPuntos = ventaCab.puntosTotales25;
+                }
+            }
         }
         catch (Exception ex)
         {
-            Error = "ProductoListar : " + ex.Message;
+            Error = ex.Message;
         }
     }
 }

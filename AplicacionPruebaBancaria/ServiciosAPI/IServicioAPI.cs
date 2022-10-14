@@ -1,4 +1,5 @@
-﻿using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
+﻿using AplicacionPruebaBancaria.Modelos.ListarPersonaPorRol;
+using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
 using AplicacionPruebaBancaria.Modelos.ListarVentasDET;
 using AplicacionPruebaBancaria.Modelos.Parametos;
 using AplicacionPruebaBancaria.Modelos.Producto;
@@ -22,6 +23,9 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
 
         //PRODUCTOS
         Task<List<ListaProducto>> ProductoListar(string iIdProducto,string sDescripcionProducto);
+
+        //PERSONAS
+        Task<List<ListaPersonalPorRol>> ListaPersonalPorRol(string Id09, string Id08);
 
 
     }
