@@ -3,6 +3,7 @@ using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
 using AplicacionPruebaBancaria.Modelos.ListarVentasDET;
 using AplicacionPruebaBancaria.Modelos.Parametos;
 using AplicacionPruebaBancaria.Modelos.Producto;
+using AplicacionPruebaBancaria.Modelos.Reportes;
 using AplicacionPruebaBancaria.Modelos.Utilitarios;
 using AplicacionPruebaBancaria.Modelos.VentasCAB;
 using Newtonsoft.Json;
@@ -186,6 +187,30 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
                 var json_respuesta = await response.Content.ReadAsStringAsync();
                 var resultado = JsonConvert.DeserializeObject<ListarPersonasRol>(json_respuesta);
                 lista = resultado.data.listaPersonalPorRol;
+                Console.Write(resultado);
+            }
+
+            return lista;
+        }
+
+        public async Task<List<ListarReporteMetaVentas>> ReporteMetaVentas(ParamRepMetaVentas ParamRepMetaVentas)
+        {
+            List<ListarReporteMetaVentas> lista = new List<ListarReporteMetaVentas>();
+
+            await Autentificar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            cliente.DefaultRequestHeaders.Add("Datos", JsonConvert.SerializeObject(ParamRepMetaVentas));
+            //var content = new StringContent(JsonConvert.SerializeObject(ParamRepMetaVentas), Encoding.UTF8, "application/json", HeaderStringValues);
+            var response = await cliente.GetAsync("Reportes/ReporteMetaVentas");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<ReporteMetaVentas>(json_respuesta);
+                lista = resultado.data.ListarReporteMetaVentas;
                 Console.Write(resultado);
             }
 

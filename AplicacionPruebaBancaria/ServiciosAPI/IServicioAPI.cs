@@ -1,8 +1,8 @@
 ﻿using AplicacionPruebaBancaria.Modelos.ListarPersonaPorRol;
-using AplicacionPruebaBancaria.Modelos.ListarVentasCAB;
 using AplicacionPruebaBancaria.Modelos.ListarVentasDET;
 using AplicacionPruebaBancaria.Modelos.Parametos;
 using AplicacionPruebaBancaria.Modelos.Producto;
+using AplicacionPruebaBancaria.Modelos.Reportes;
 using AplicacionPruebaBancaria.Modelos.Utilitarios;
 using AplicacionPruebaBancaria.Modelos.VentasCAB;
 
@@ -27,6 +27,7 @@ namespace AplicacionPruebaBancaria.ServiciosAPI
         //PERSONAS
         Task<List<ListaPersonalPorRol>> ListaPersonalPorRol(string Id09, string Id08);
 
-
+        //REPORTES
+        Task<List<ListarReporteMetaVentas>> ReporteMetaVentas(ParamRepMetaVentas ParamRepMetaVentas);
     }
 }
